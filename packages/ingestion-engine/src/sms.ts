@@ -28,7 +28,7 @@ function tryParseLoanDisbursal(
   }
 }
 
-function tryParseUpiDebit(
+export function parseUpiDebitSms(
   body: string,
   currency: CurrencyCode
 ): ParsedUpiDebit | null {
@@ -75,7 +75,7 @@ export function parseSmsMessage(
   }
 
   // 2) Try UPI debit pattern
-  const upiDebit = tryParseUpiDebit(body, defaultCurrency);
+  const upiDebit = parseUpiDebitSms(body, defaultCurrency);
   if (upiDebit) {
     return {
       context,

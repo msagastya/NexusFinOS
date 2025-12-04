@@ -1,7 +1,46 @@
-import { ParsedMessage } from './types';
+import { ParsedMessage, ParsedUpiDebit } from './types';
 import {
   TrueCostLoanParams,
 } from '@nexus/finance-engine/loan';
+import { parseUpiDebitSms } from './sms';
+import { findBestReconciliation, resolveAndCleanPendingIntent } from '@upi/reconciliation';
+import { getPendingIntents } from '@upi/pending';
+import { UpiPaymentIntent } from '@upi/types';
+
+export async function processUpiDebitSms(
+  body: string
+): Promise<ParsedUpiDebit | null> {
+  const parsed = parseUpiDebitSms(body, 'INR');
+  if (!parsed) return null;
+
+  console.log('UPI Debit parsed:', parsed);
+
+  // Attempt reconciliation
+  const pending = await getPendingIntents(20);
+  if (pending.length > 0) {
+    const intents: UpiPaymentIntent[] = pending.map((p) => ({
+      id: p.id,
+      payeeVpa: p.payeeVpa,
+      payeeName: p.payeeName,
+      amount: p.amount,
+      currency: p.currency,
+      suggestedCategoryId: p.suggestedCategoryId,
+      correlationKey: p.correlationKey,
+      createdAt: p.createdAt,
+    }));
+
+    const best = findBestReconciliation(intents, parsed);
+    if (best) {
+      console.log('Reconciliation candidate success:', best);
+      const match = pending.find((p) => p.correlationKey === best.intent.correlationKey);
+      if (match) {
+        await resolveAndCleanPendingIntent(match.id, best.intent);
+      }
+    }
+  }
+
+  return parsed;
+}
 
 export type IngestionIntentKind = 'LOAN_TRUE_COST' | 'UPI_PAYMENT' | 'UNKNOWN';
 
