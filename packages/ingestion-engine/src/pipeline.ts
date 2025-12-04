@@ -6,6 +6,7 @@ import { parseUpiDebitSms } from './sms';
 import { findBestReconciliation, resolveAndCleanPendingIntent } from '@upi/reconciliation';
 import { getPendingIntents } from '@upi/pending';
 import { UpiPaymentIntent } from '@upi/types';
+import { CurrencyCode } from '@nexus/shared-domain';
 
 export async function processUpiDebitSms(
   body: string
@@ -23,7 +24,7 @@ export async function processUpiDebitSms(
       payeeVpa: p.payeeVpa,
       payeeName: p.payeeName,
       amount: p.amount,
-      currency: p.currency,
+      currency: p.currency as CurrencyCode,
       suggestedCategoryId: p.suggestedCategoryId,
       correlationKey: p.correlationKey,
       createdAt: p.createdAt,
@@ -55,15 +56,8 @@ export interface LoanTrueCostIntent extends IngestionIntent {
   params: TrueCostLoanParams;
 }
 
-export interface UpiPaymentIntent extends IngestionIntent {
-  kind: 'UPI_PAYMENT';
-  amount: number;
-  currency: string;
-}
-
 export type AnyIngestionIntent =
   | LoanTrueCostIntent
-  | UpiPaymentIntent
   | IngestionIntent; // fallback for UNKNOWN
 
 export function buildIngestionIntentFromParsed(
