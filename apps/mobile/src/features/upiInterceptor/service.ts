@@ -2,6 +2,7 @@ import { Linking } from 'react-native';
 import { getDatabase } from '@core/index';
 import { parseUpiUrl, buildUpiUrl } from '@upi/upiUrl';
 import { buildUpiPaymentIntent } from '@upi/payeeHistory';
+import { savePendingIntent } from '@upi/pending';
 import { PayeeHistoryModel } from '../../core/db/models/PayeeHistoryModel';
 import { UpiPaymentIntent } from './types';
 
@@ -50,7 +51,16 @@ export async function buildUpiLaunchUrl(intent: {
 }
 
 export async function launchUpiAppForIntent(intent: UpiPaymentIntent) {
-  const url = await buildUpiLaunchUrl(intent);
+  // Persist this intent so that a later UPI debit SMS can be reconciled against it.
+  await savePendingIntent(intent);
+
+  const url = await buildUpiLaunchUrl({
+    payeeVpa: intent.payeeVpa,
+    payeeName: intent.payeeName,
+    amount: intent.amount,
+    currency: intent.currency,
+  });
+
   // DO NOT auto-call this on app boot; this should be triggered by explicit UI flows later.
   await Linking.openURL(url);
 }
