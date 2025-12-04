@@ -1,5 +1,6 @@
 import { ParsedUpiDebit } from '@nexus/ingestion-engine/types';
 import { UpiPaymentIntent } from './types';
+import { removePendingIntent } from './pending';
 
 export interface ReconciliationCandidate {
   intent: UpiPaymentIntent;
@@ -49,4 +50,17 @@ export function findBestReconciliation(
 
   // Return the highest scoring candidate
   return candidates.sort((a, b) => b.matchScore - a.matchScore)[0];
+}
+
+// Remove pending UPI intent once reconciled
+export async function resolveAndCleanPendingIntent(
+  pendingId: string,
+  resolvedIntent: UpiPaymentIntent
+): Promise<void> {
+  console.log(
+    'Reconciliation success, removing pending entry:',
+    pendingId,
+    resolvedIntent
+  );
+  await removePendingIntent(pendingId);
 }
