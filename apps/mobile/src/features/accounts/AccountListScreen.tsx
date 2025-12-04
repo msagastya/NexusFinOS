@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { useDatabase, useObservable } from '@nozbe/watermelondb/hooks';
+import { useDatabase } from '@nozbe/watermelondb/hooks';
 import { AccountModel } from '../../core/db/models/AccountModel';
 
 const AccountListScreen: React.FC = () => {
   const database = useDatabase();
-  const accounts = useObservable(
-    database.collections.get<AccountModel>('accounts').query().observe()
-  );
+  const [accounts, setAccounts] = useState<AccountModel[]>([]);
+
+  useEffect(() => {
+    const accountsObservable = database.collections
+      .get<AccountModel>('accounts')
+      .query()
+      .observe();
+
+    const subscription = accountsObservable.subscribe(setAccounts);
+
+    return () => subscription.unsubscribe();
+  }, [database]);
 
   // Placeholder for balance calculation - will be implemented later
   const calculateBalance = (account: AccountModel) => {

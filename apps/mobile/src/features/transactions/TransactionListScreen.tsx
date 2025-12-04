@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { useDatabase, useObservable } from '@nozbe/watermelondb/hooks';
+import { useDatabase } from '@nozbe/watermelondb/hooks';
 import { TransactionModel } from '../../core/db/models/TransactionModel';
 
 const TransactionListScreen: React.FC = () => {
   const database = useDatabase();
-  const transactions = useObservable(
-    database.collections.get<TransactionModel>('transactions').query().observe()
-  );
+  const [transactions, setTransactions] = useState<TransactionModel[]>([]);
+
+  useEffect(() => {
+    const transactionsObservable = database.collections
+      .get<TransactionModel>('transactions')
+      .query()
+      .observe();
+
+    const subscription = transactionsObservable.subscribe(setTransactions);
+
+    return () => subscription.unsubscribe();
+  }, [database]);
 
   return (
     <View style={styles.container}>
