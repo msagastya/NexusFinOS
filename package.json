@@ -9,6 +9,7 @@
     "packages/*"
   ],
   "scripts": {
+    "build:all": "npm run build --workspace=packages/shared-domain && npm run build --workspace=packages/finance-engine && npm run build --workspace=packages/sync-engine && npm run build --workspace=packages/ingestion-engine && npm run build --workspace=packages/upi-engine",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:mobile": "npm run start --workspace=apps/mobile"
   },
