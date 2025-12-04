@@ -22,23 +22,29 @@ export default function App() {
   console.log('Sample EMI:', sampleEmi);
 
   // Example: Ingest a sample SMS
-  ingestRawSms({
-    id: 'test-loan-sms',
-    source: 'SMS',
-    receivedAt: new Date(),
-    sender: 'BANK',
-    body: 'Credited ₹4,95,000 for Personal Loan of ₹5,00,000.',
-  });
 
   useEffect(() => {
+    if (!__DEV__) {
+      return;
+    }
+
     (async () => {
       try {
+        // Dev-only: loan ingestion smoke test
+        await ingestRawSms({
+          id: 'dev-loan-1',
+          source: 'SMS',
+          receivedAt: new Date(),
+          body: 'Credited ₹4,95,000 for Personal Loan of ₹5,00,000.',
+        });
+
+        // Dev-only: UPI intent smoke test
         const intent = await buildUpiIntentFromUrl(
           'upi://pay?pa=merchant@bank&pn=MerchantName&am=123.45&cu=INR'
         );
         console.log('Dev UPI intent smoke-test:', intent);
       } catch (e) {
-        console.log('UPI intent test failed:', e);
+        console.log('Dev ingestion/UPI smoke-tests failed:', e);
       }
     })();
   }, []);
