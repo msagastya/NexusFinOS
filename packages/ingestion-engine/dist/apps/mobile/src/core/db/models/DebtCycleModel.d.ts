@@ -1,12 +1,10 @@
 import { Model } from '@nozbe/watermelondb';
 export declare class DebtCycleModel extends Model {
     static table: string;
-    fromAccountId: string;
-    toAccountId: string;
-    contactName: string;
-    totalAmount: number;
-    currency: string;
-    status: string;
+    contactPhone: string;
+    direction: string;
+    total: number;
+    remaining: number;
     createdAt: Date;
     updatedAt: Date;
 }

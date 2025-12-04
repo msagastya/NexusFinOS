@@ -11,39 +11,29 @@ import { Model } from '@nozbe/watermelondb';
 import { field, date } from '@nozbe/watermelondb/decorators';
 export class DebtCycleModel extends Model {
     static table = 'debt_cycles';
-    fromAccountId;
-    toAccountId;
-    contactName;
-    totalAmount;
-    currency;
-    status;
+    contactPhone;
+    direction; // 'LEND' | 'BORROW'
+    total;
+    remaining;
     createdAt;
     updatedAt;
 }
 __decorate([
-    field('from_account_id'),
+    field('contact_phone'),
     __metadata("design:type", String)
-], DebtCycleModel.prototype, "fromAccountId", void 0);
+], DebtCycleModel.prototype, "contactPhone", void 0);
 __decorate([
-    field('to_account_id'),
+    field('direction'),
     __metadata("design:type", String)
-], DebtCycleModel.prototype, "toAccountId", void 0);
+], DebtCycleModel.prototype, "direction", void 0);
 __decorate([
-    field('contact_name'),
-    __metadata("design:type", String)
-], DebtCycleModel.prototype, "contactName", void 0);
-__decorate([
-    field('total_amount'),
+    field('total'),
     __metadata("design:type", Number)
-], DebtCycleModel.prototype, "totalAmount", void 0);
+], DebtCycleModel.prototype, "total", void 0);
 __decorate([
-    field('currency'),
-    __metadata("design:type", String)
-], DebtCycleModel.prototype, "currency", void 0);
-__decorate([
-    field('status'),
-    __metadata("design:type", String)
-], DebtCycleModel.prototype, "status", void 0);
+    field('remaining'),
+    __metadata("design:type", Number)
+], DebtCycleModel.prototype, "remaining", void 0);
 __decorate([
     date('created_at'),
     __metadata("design:type", Date)

@@ -1,15 +1,10 @@
 import { Model } from '@nozbe/watermelondb';
 export declare class RecurringRuleModel extends Model {
     static table: string;
-    name: string;
-    type: string;
-    amount: number;
-    currency: string;
-    dayOfMonth?: number;
-    cronExpression?: string;
-    linkedAccountId?: string;
-    categoryId?: string;
-    active: boolean;
+    ruleType: string;
+    sourceTransactionId: string;
+    intervalMonths: number;
+    nextExecutionDate: number;
     createdAt: Date;
     updatedAt: Date;
 }

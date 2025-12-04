@@ -11,54 +11,29 @@ import { Model } from '@nozbe/watermelondb';
 import { field, date } from '@nozbe/watermelondb/decorators';
 export class RecurringRuleModel extends Model {
     static table = 'recurring_rules';
-    name;
-    type;
-    amount;
-    currency;
-    dayOfMonth;
-    cronExpression;
-    linkedAccountId;
-    categoryId;
-    active;
+    ruleType; // EMI | SIP | CUSTOM_RECURRING
+    sourceTransactionId;
+    intervalMonths;
+    nextExecutionDate;
     createdAt;
     updatedAt;
 }
 __decorate([
-    field('name'),
+    field('rule_type'),
     __metadata("design:type", String)
-], RecurringRuleModel.prototype, "name", void 0);
+], RecurringRuleModel.prototype, "ruleType", void 0);
 __decorate([
-    field('type'),
+    field('source_transaction_id'),
     __metadata("design:type", String)
-], RecurringRuleModel.prototype, "type", void 0);
+], RecurringRuleModel.prototype, "sourceTransactionId", void 0);
 __decorate([
-    field('amount'),
+    field('interval_months'),
     __metadata("design:type", Number)
-], RecurringRuleModel.prototype, "amount", void 0);
+], RecurringRuleModel.prototype, "intervalMonths", void 0);
 __decorate([
-    field('currency'),
-    __metadata("design:type", String)
-], RecurringRuleModel.prototype, "currency", void 0);
-__decorate([
-    field('day_of_month'),
+    field('next_execution_date'),
     __metadata("design:type", Number)
-], RecurringRuleModel.prototype, "dayOfMonth", void 0);
-__decorate([
-    field('cron_expression'),
-    __metadata("design:type", String)
-], RecurringRuleModel.prototype, "cronExpression", void 0);
-__decorate([
-    field('linked_account_id'),
-    __metadata("design:type", String)
-], RecurringRuleModel.prototype, "linkedAccountId", void 0);
-__decorate([
-    field('category_id'),
-    __metadata("design:type", String)
-], RecurringRuleModel.prototype, "categoryId", void 0);
-__decorate([
-    field('active'),
-    __metadata("design:type", Boolean)
-], RecurringRuleModel.prototype, "active", void 0);
+], RecurringRuleModel.prototype, "nextExecutionDate", void 0);
 __decorate([
     date('created_at'),
     __metadata("design:type", Date)

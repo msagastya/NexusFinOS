@@ -33,12 +33,10 @@ export const databaseSchema = appSchema({
     tableSchema({
       name: 'debt_cycles',
       columns: [
-        { name: 'from_account_id', type: 'string', isIndexed: true },
-        { name: 'to_account_id', type: 'string', isIndexed: true },
-        { name: 'contact_name', type: 'string' },
-        { name: 'total_amount', type: 'number' },
-        { name: 'currency', type: 'string' },
-        { name: 'status', type: 'string' }, // "ACTIVE" | "SETTLED"
+        { name: 'contact_phone', type: 'string' },
+        { name: 'direction', type: 'string' }, // 'LEND' | 'BORROW'
+        { name: 'total', type: 'number' },
+        { name: 'remaining', type: 'number' },
         { name: 'created_at', type: 'number' },
         { name: 'updated_at', type: 'number' },
       ],
@@ -46,15 +44,10 @@ export const databaseSchema = appSchema({
     tableSchema({
       name: 'recurring_rules',
       columns: [
-        { name: 'name', type: 'string' },
-        { name: 'type', type: 'string' }, // "EMI" | "SIP" | "SUBSCRIPTION" | "OTHER"
-        { name: 'amount', type: 'number' },
-        { name: 'currency', type: 'string' },
-        { name: 'day_of_month', type: 'number', isOptional: true },
-        { name: 'cron_expression', type: 'string', isOptional: true },
-        { name: 'linked_account_id', type: 'string', isOptional: true },
-        { name: 'category_id', type: 'string', isOptional: true },
-        { name: 'active', type: 'boolean' },
+        { name: 'rule_type', type: 'string' }, // EMI | SIP | CUSTOM_RECURRING
+        { name: 'source_transaction_id', type: 'string' },
+        { name: 'interval_months', type: 'number' },
+        { name: 'next_execution_date', type: 'number' },
         { name: 'created_at', type: 'number' },
         { name: 'updated_at', type: 'number' },
       ],
