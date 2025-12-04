@@ -7,6 +7,8 @@ import { findBestReconciliation, resolveAndCleanPendingIntent } from '@upi/recon
 import { getPendingIntents } from '@upi/pending';
 import { UpiPaymentIntent } from '@upi/types';
 import { CurrencyCode } from '@nexus/shared-domain';
+import { v4 as uuidv4 } from 'uuid';
+import { buildCorrelationKey } from '@upi/payeeHistory';
 
 export async function processUpiDebitSms(
   body: string
@@ -58,6 +60,7 @@ export interface LoanTrueCostIntent extends IngestionIntent {
 
 export type AnyIngestionIntent =
   | LoanTrueCostIntent
+  | UpiPaymentIntent
   | IngestionIntent; // fallback for UNKNOWN
 
 export function buildIngestionIntentFromParsed(
@@ -88,17 +91,27 @@ export function buildIngestionIntentFromParsed(
     }
 
     case 'UPI_DEBIT': {
-      const { amount, currency } = parsed.payload;
+      const { amount, currency, vpa } = parsed.payload;
+      const now = new Date();
       return {
+        id: uuidv4(),
         kind: 'UPI_PAYMENT',
         sourceMessageId: parsed.context.id,
-        meta: {
-          vpa: parsed.payload.vpa,
-          merchantName: parsed.payload.merchantName,
-        },
+        payeeVpa: vpa!, // Assuming vpa is always present for UPI_DEBIT
+        payeeName: parsed.payload.merchantName,
         amount,
-        currency,
-      };
+        currency: currency as CurrencyCode,
+        createdAt: now,
+        correlationKey: buildCorrelationKey(
+          {
+            rawUrl: '', // Not applicable here
+            payeeVpa: vpa!,
+            amount,
+            currency,
+          },
+          now
+        ),
+      } as UpiPaymentIntent;
     }
 
     default:

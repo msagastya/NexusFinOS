@@ -1,8 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.calculateEMI = calculateEMI;
-exports.splitEmiPayment = splitEmiPayment;
-function calculateEMI(principal, annualRatePercent, tenureMonths) {
+export function calculateEMI(principal, annualRatePercent, tenureMonths) {
     if (principal <= 0 || annualRatePercent <= 0 || tenureMonths <= 0) {
         return 0;
     }
@@ -13,7 +9,7 @@ function calculateEMI(principal, annualRatePercent, tenureMonths) {
     const emi = (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     return Math.round(emi * 100) / 100;
 }
-function splitEmiPayment(input) {
+export function splitEmiPayment(input) {
     const { principalOutstanding, annualRatePercent, emiAmount } = input;
     const monthlyRate = annualRatePercent / 12 / 100;
     const interestComponent = principalOutstanding * monthlyRate;

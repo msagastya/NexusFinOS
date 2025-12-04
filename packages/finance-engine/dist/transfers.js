@@ -1,13 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildTransferTransactions = buildTransferTransactions;
-exports.validateTransfers = validateTransfers;
-const uuid_1 = require("uuid");
-function buildTransferTransactions(input) {
+import { v4 as uuidv4 } from 'uuid';
+export function buildTransferTransactions(input) {
     const { fromAccountId, toAccountId, amount, currency, timestamp, description } = input;
-    const splitGroupId = (0, uuid_1.v4)();
+    const splitGroupId = uuidv4();
     const fromTransaction = {
-        id: (0, uuid_1.v4)(),
+        id: uuidv4(),
         accountId: fromAccountId,
         amount: -amount, // Negative amount for debit
         currency,
@@ -20,7 +16,7 @@ function buildTransferTransactions(input) {
         updatedAt: timestamp,
     };
     const toTransaction = {
-        id: (0, uuid_1.v4)(),
+        id: uuidv4(),
         accountId: toAccountId,
         amount: amount, // Positive amount for credit
         currency,
@@ -38,7 +34,7 @@ function buildTransferTransactions(input) {
  * Validates that a set of transactions that are part of a single transfer
  * are balanced (i.e., their amounts sum to zero).
  */
-function validateTransfers(transactions) {
+export function validateTransfers(transactions) {
     if (transactions.length === 0) {
         return true;
     }

@@ -1,12 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseLoanDisbursementSms = parseLoanDisbursementSms;
-exports.buildTrueCostLoanEntries = buildTrueCostLoanEntries;
 /**
  * Parses a simple Indian loan disbursement SMS.
  * Example: "Credited ₹4,95,000 for Personal Loan of ₹5,00,000."
  */
-function parseLoanDisbursementSms(raw, currency = 'INR') {
+export function parseLoanDisbursementSms(raw, currency = 'INR') {
     // Normalize string: remove commas, currency symbols, and non-breaking spaces
     const cleaned = raw
         .replace(/₹/g, '')
@@ -25,7 +21,7 @@ function parseLoanDisbursementSms(raw, currency = 'INR') {
         currency,
     };
 }
-function buildTrueCostLoanEntries(params) {
+export function buildTrueCostLoanEntries(params) {
     const { bankAccountId, loanLiabilityAccountId, processingFeeExpenseAccountId, gstExpenseAccountId, creditedAmount, sanctionedAmount, processingFeeGstRate, } = params;
     const totalDiff = sanctionedAmount - creditedAmount;
     const fee = totalDiff / (1 + processingFeeGstRate);

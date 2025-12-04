@@ -13,7 +13,11 @@
     "lint": "echo \"no lint yet\""
   },
   "dependencies": {
+    "@nexus/finance-engine": "0.1.0",
     "@nexus/shared-domain": "0.1.0",
-    "@nexus/finance-engine": "0.1.0"
+    "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "@types/uuid": "^10.0.0"
   }
 }

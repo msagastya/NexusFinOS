@@ -1,11 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildSplitExpenseTransactions = buildSplitExpenseTransactions;
-exports.buildSettlementTransactions = buildSettlementTransactions;
-const uuid_1 = require("uuid"); // Assuming uuid is available
+import { v4 as uuidv4 } from 'uuid'; // Assuming uuid is available
 // Helper to create a base transaction
 const createBaseTransaction = (accountId, amount, currency, timestamp, kind) => ({
-    id: (0, uuid_1.v4)(),
+    id: uuidv4(),
     accountId,
     amount,
     currency,
@@ -15,9 +11,9 @@ const createBaseTransaction = (accountId, amount, currency, timestamp, kind) => 
     createdAt: timestamp,
     updatedAt: timestamp,
 });
-function buildSplitExpenseTransactions(input, timestamp = new Date()) {
+export function buildSplitExpenseTransactions(input, timestamp = new Date()) {
     const { payingAccountId, totalAmount, currency, splits } = input;
-    const splitGroupId = (0, uuid_1.v4)();
+    const splitGroupId = uuidv4();
     // 1. The real transaction from the user's actual bank/wallet account
     const realTransaction = createBaseTransaction(payingAccountId, totalAmount, currency, timestamp, 'DEBIT' // Money is leaving the account
     );
@@ -45,9 +41,9 @@ function buildSplitExpenseTransactions(input, timestamp = new Date()) {
     }
     return { realTransaction, syntheticTransactions };
 }
-function buildSettlementTransactions(input, timestamp = new Date()) {
+export function buildSettlementTransactions(input, timestamp = new Date()) {
     const { bankAccountId, receivableAccountId, amount, currency } = input;
-    const settlementGroupId = (0, uuid_1.v4)();
+    const settlementGroupId = uuidv4();
     // Friend pays you back, so money comes INTO your bank account
     const bankTransaction = createBaseTransaction(bankAccountId, amount, currency, timestamp, 'CREDIT');
     bankTransaction.description = 'Settlement received';
