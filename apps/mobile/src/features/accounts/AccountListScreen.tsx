@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useDatabase } from '@nozbe/watermelondb/hooks';
 import { AccountModel } from '../../core/db/models/AccountModel';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation';
 
-const AccountListScreen: React.FC = () => {
+type Props = NativeStackScreenProps<RootStackParamList, 'Accounts'>;
+
+const AccountListScreen: React.FC<Props> = ({ navigation }) => {
   const database = useDatabase();
   const [accounts, setAccounts] = useState<AccountModel[]>([]);
 
@@ -26,7 +30,15 @@ const AccountListScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Accounts</Text>
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>Accounts</Text>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate('CreateAccount')}
+        >
+          <Text style={styles.addButtonText}>Add Account</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={accounts}
         keyExtractor={(item) => item.id}
@@ -49,10 +61,27 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#f5f5f5',
   },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    color: '#333',
+  },
+  addButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   item: {
     backgroundColor: '#fff',
@@ -72,3 +101,4 @@ const styles = StyleSheet.create({
 });
 
 export default AccountListScreen;
+
