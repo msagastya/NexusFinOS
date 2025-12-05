@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useDatabase } from '@nozbe/watermelondb/hooks';
 import { TransactionModel } from '../../core/db/models/TransactionModel';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation';
 
-const TransactionListScreen: React.FC = () => {
+type Props = NativeStackScreenProps<RootStackParamList, 'Transactions'>;
+
+const TransactionListScreen: React.FC<Props> = ({ navigation }) => {
   const database = useDatabase();
   const [transactions, setTransactions] = useState<TransactionModel[]>([]);
 
@@ -20,7 +24,15 @@ const TransactionListScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Transactions</Text>
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>Transactions</Text>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate('CreateTransaction')}
+        >
+          <Text style={styles.addButtonText}>Add Transaction</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={transactions}
         keyExtractor={(item) => item.id}
@@ -43,10 +55,27 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#f5f5f5',
   },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    color: '#333',
+  },
+  addButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   item: {
     backgroundColor: '#fff',

@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AccountListScreen from '../features/accounts/AccountListScreen';
 import TransactionListScreen from '../features/transactions/TransactionListScreen';
 import CreateAccountScreen from '../features/accounts/CreateAccountScreen';
+import CreateTransactionScreen from '../features/transactions/CreateTransactionScreen';
 import AppEntry from '../AppEntry';
 
 export type RootStackParamList = {
@@ -11,6 +12,7 @@ export type RootStackParamList = {
   Accounts: undefined;
   Transactions: undefined;
   CreateAccount: undefined;
+  CreateTransaction: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -23,6 +25,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="Accounts" component={AccountListScreen} />
         <Stack.Screen name="Transactions" component={TransactionListScreen} />
         <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
+        <Stack.Screen name="CreateTransaction" component={CreateTransactionScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
