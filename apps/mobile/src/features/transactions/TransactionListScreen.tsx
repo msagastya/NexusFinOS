@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { useDatabase } from '@nozbe/watermelondb/hooks';
 import { TransactionModel } from '../../core/db/models/TransactionModel';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Transactions'>;
 
@@ -22,16 +24,66 @@ const TransactionListScreen: React.FC<Props> = ({ navigation }) => {
     return () => subscription.unsubscribe();
   }, [database]);
 
+  const exportTransactionsToCsv = async () => {
+    if (transactions.length === 0) {
+      Alert.alert('No Data', 'No transactions to export.');
+      return;
+    }
+
+    const header = ['ID', 'Account ID', 'Amount', 'Currency', 'Kind', 'Status', 'Timestamp', 'Description', 'Split Group ID', 'Geo Location', 'Created At', 'Updated At'];
+    const rows = transactions.map(t => [
+      t.id,
+      t.accountId,
+      t.amount,
+      t.currency,
+      t.kind,
+      t.status,
+      t.timestamp.toISOString(),
+      t.description || '',
+      t.splitGroupId || '',
+      t.geoLocation || '',
+      t.createdAt.toISOString(),
+      t.updatedAt.toISOString(),
+    ]);
+
+    const csvContent = [
+      header.map(h => `"${h}"`).join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(',')),
+    ].join('\n');
+
+    const fileUri = (FileSystem as any).cacheDirectory + 'transactions.csv';
+
+    try {
+      await FileSystem.writeAsStringAsync(fileUri, csvContent);
+      if (!(await Sharing.isAvailableAsync())) {
+        Alert.alert('Error', 'Sharing is not available on this device.');
+        return;
+      }
+      await Sharing.shareAsync(fileUri);
+    } catch (error) {
+      console.error('Error exporting CSV:', error);
+      Alert.alert('Error', 'Failed to export transactions.');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Transactions</Text>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => navigation.navigate('CreateTransaction')}
-        >
-          <Text style={styles.addButtonText}>Add Transaction</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonGroup}>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => navigation.navigate('CreateTransaction')}
+          >
+            <Text style={styles.addButtonText}>Add Transaction</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.addButton, styles.exportButton]}
+            onPress={exportTransactionsToCsv}
+          >
+            <Text style={styles.addButtonText}>Export CSV</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <FlatList
         data={transactions}
@@ -66,6 +118,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
+  buttonGroup: {
+    flexDirection: 'row',
+    gap: 10,
+  },
   addButton: {
     backgroundColor: '#007AFF',
     paddingVertical: 8,
@@ -76,6 +132,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  exportButton: {
+    backgroundColor: '#28a745', // Green color for export
   },
   item: {
     backgroundColor: '#fff',
