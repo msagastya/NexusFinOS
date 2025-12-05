@@ -43,12 +43,15 @@ const AccountListScreen: React.FC<Props> = ({ navigation }) => {
         data={accounts}
         keyExtractor={(item) => item.id}
         renderItem={({ item: account }) => (
-          <View style={styles.item}>
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => navigation.navigate('AccountDetail', { accountId: account.id })}
+          >
             <Text style={styles.itemTitle}>{account.name}</Text>
             <Text>Type: {account.type}</Text>
             <Text>Currency: {account.currency}</Text>
             <Text>Balance: {calculateBalance(account)}</Text>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
