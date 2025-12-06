@@ -1,4 +1,4 @@
-import { URL } from 'whatwg-url';
+import { URL } from 'react-native-url-polyfill';
 import { UpiUrlPayload, UpiPaymentIntent } from './types';
 import { CurrencyCode } from '@nexus/shared-domain';
 

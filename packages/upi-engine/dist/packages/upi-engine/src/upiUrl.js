@@ -1,4 +1,4 @@
-import { URL } from 'whatwg-url';
+import { URL } from 'react-native-url-polyfill';
 export function parseUpiUrl(rawUrl, defaultCurrency = 'INR') {
     if (!rawUrl.startsWith('upi://')) {
         throw new Error('Invalid UPI URL: must start with "upi://"');
